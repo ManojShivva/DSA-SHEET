@@ -1,0 +1,136 @@
+// Question - Evaluate boolean expression to true.
+// Level - Hard
+// Prerequsites - Should be familiar with solving Partition DP problems
+
+//Memoization
+
+public class Main
+{
+    public static int helper(int i, int j, int isTrue, String s, int dp[][][])
+    {
+        if(i > j)
+        {
+            return 0;
+        }
+        if(i == j)
+        {
+            if(isTrue == 1)
+            {
+                return s.charAt(i)=='T' ? 1 : 0;
+            }
+            else
+            {
+                return s.charAt(i)=='F' ? 1 : 0;
+            }
+        }
+        if(dp[i][j][isTrue] != -1)
+        {
+            return dp[i][j][isTrue];
+        }
+        int noWays = 0;
+        for(int k = i+1; k <= j-1; k=k+2)
+        {
+            int lt = helper(i,k-1,1,s, dp);
+            int rt = helper(k+1,j,1,s, dp);
+            int lf = helper(i,k-1,0,s, dp);
+            int rf = helper(k+1,j,0,s, dp);
+            if((s.charAt(k) == '&') && (isTrue == 1)) 
+            {
+                noWays += lt*rt;
+            }
+            else if((s.charAt(k) == '&') && (isTrue == 0))
+            {
+                noWays += lf*rt;
+                noWays += lt*rf;
+                noWays += lf*rf;
+            }
+            else if((s.charAt(k) == '|') && (isTrue == 1))
+            {
+                noWays += lf*rt;
+                noWays += lt*rf;
+                noWays += lt*rt;
+            }
+            else if((s.charAt(k) == '|') && (isTrue == 0))
+            {
+                noWays += lf*rf;
+            }
+            else if((s.charAt(k) == '^') && (isTrue == 1))
+            {
+                noWays += lf*rt;
+                noWays += lt*rf;
+            }
+            else
+            {
+                noWays += lf*rf;
+                noWays += lt*rt;
+            }
+        }
+        dp[i][j][isTrue] = noWays;
+        return dp[i][j][isTrue];
+    }
+	public static void main(String[] args) {
+		String s = "F|T^F";
+		int dp[][][] = new int[s.length()][s.length()][2];
+		for(int i = 0; i < s.length(); i++)
+		{
+		    for(int j = 0; j < s.length(); j++)
+		    {
+		        for(int k = 0; k < 2; k++)
+		        {
+		            dp[i][j][k] = -1;
+		        }
+		    }
+		}
+		System.out.println(helper(0, s.length()-1, 1, s, dp));
+	}
+}
+
+
+//Tabulation
+
+public class Main
+{
+	public static void main(String[] args) {
+		String s = "F|T^F";
+		int dp[][][] = new int[s.length()][s.length()][2];
+		
+		for(int i = s.length()-1; i >= 0; i--)
+		{
+		    for(int j = i; j <= s.length()-1; j++)
+		    {
+		        if(i == j)
+		        {
+		            dp[i][j][1] = s.charAt(i) == 'T' ? 1 : 0;
+		            dp[i][j][0] = s.charAt(i) == 'F' ? 1 : 0;
+		        }
+		        else
+		        {
+		            int noWays = 0;
+                    for(int k = i+1; k <= j-1; k=k+2)
+                    {
+                        int lt = dp[i][k-1][1];
+                        int rt = dp[k+1][j][1];
+                        int lf = dp[i][k-1][0];
+                        int rf = dp[k+1][j][0];
+                        if(s.charAt(k) == '&') 
+                        {
+                            dp[i][j][1] += lt*rt;
+                            dp[i][j][0] += (lf*rt)+(lt*rf)+(lf*rf);
+                        }
+                        else if(s.charAt(k) == '|')
+                        {
+                            dp[i][j][1] += (lt*rt)+(lf*rt)+(lt*rf);
+                            dp[i][j][0] += (lf*rf);
+                        }
+                        else
+                        {
+                            dp[i][j][1] += (lt*rf)+(lf*rt);
+                            dp[i][j][0] += (lf*rf)+(lt*rt);
+                        }
+                    }
+		        }
+		    }
+		}
+		System.out.println(dp[0][s.length()-1][1]);
+	}
+}
