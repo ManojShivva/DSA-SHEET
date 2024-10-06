@@ -1,0 +1,72 @@
+// Question - Burst Balloon
+// Level - Hard
+// Prerequsites - Should be familiar with solving Partition DP problems.
+
+
+//Memoization
+
+int helper(int i, int j, int nums[], int[][] dp)
+{
+    if(i > j)
+    {
+        return 0;
+    }
+    if(dp[i][j] != -1)
+    {
+        return dp[i][j];
+    }
+    int finalCoins = Integer.MIN_VALUE;
+    for(int k = i; k <= j; k++)
+    {
+        int coins = nums[i-1]*nums[k]*nums[j+1]+helper(i,k-1,nums, dp)+helper(k+1,j,nums, dp);
+        finalCoins = Math.max(coins, finalCoins);
+    }
+    dp[i][j] = finalCoins;
+    return dp[i][j];
+}
+public int maxCoins(int[] nums) {
+    int finalNums[] = new int[nums.length+2];
+    int[][] dp = new int[nums.length+2][nums.length+2];
+    for(int i = 0; i < nums.length+2; i++)
+    {
+        for(int j = 0; j < nums.length+2; j++)
+        {
+            dp[i][j] = -1;
+        }
+    }
+    finalNums[0] = 1;
+    finalNums[finalNums.length-1] = 1;
+    for(int i = 1; i < finalNums.length-1; i++)
+    {
+        finalNums[i] = nums[i-1];
+    }
+    return helper(1, nums.length, finalNums, dp);
+}
+
+
+//Tabulation
+
+public int maxCoins(int[] nums) {
+    int finalNums[] = new int[nums.length+2];
+    int[][] dp = new int[nums.length+2][nums.length+2];
+    finalNums[0] = 1;
+    finalNums[finalNums.length-1] = 1;
+    for(int i = 1; i < finalNums.length-1; i++)
+    {
+        finalNums[i] = nums[i-1];
+    }
+    for(int i = nums.length; i >= 1; i--)
+    {
+        for(int j = i; j <= nums.length; j++)
+        {
+            int finalCoins = Integer.MIN_VALUE;
+            for(int k = i; k <= j; k++)
+            {
+                int coins = finalNums[i-1]*finalNums[k]*finalNums[j+1]+dp[i][k-1]+dp[k+1][j];
+                finalCoins = Math.max(coins, finalCoins);
+            }
+            dp[i][j] = finalCoins;
+        }
+    }
+    return dp[1][nums.length];
+}

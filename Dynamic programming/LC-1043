@@ -1,0 +1,58 @@
+// Question - Partition Array for Maximum Sum.
+// Level - Medium
+// Prerequsites - Should be familiar with solving Partition DP problems.
+
+
+//Memoization
+
+int helper(int i, int k, int[] arr, int[] dp)
+{
+    if(i == arr.length)
+    {
+        return 0;
+    }
+    if(dp[i] != -1)
+    {
+        return dp[i];
+    }
+    int result = Integer.MIN_VALUE;
+    int maxi = Integer.MIN_VALUE, len = 0;
+    for(int index = i; index < Math.min(i+k, arr.length); index++)
+    {
+        len++;
+        maxi = Math.max(maxi, arr[index]);
+        int curr = (len*maxi)+helper(index+1,k,arr, dp);
+        result = Math.max(result, curr);
+    }
+    dp[i] = result;
+    return dp[i];
+}
+public int maxSumAfterPartitioning(int[] arr, int k) {
+    int dp[] = new int[arr.length];
+    for(int i = 0; i < arr.length; i++)
+    {
+        dp[i] = -1;
+    }
+    return helper(0, k, arr, dp);
+}
+
+
+//Tabulation
+
+public int maxSumAfterPartitioning(int[] arr, int k) {
+    int dp[] = new int[arr.length+1];
+    for(int i = arr.length-1; i >=0; i--)
+    {
+        int result = Integer.MIN_VALUE;
+        int maxi = Integer.MIN_VALUE, len = 0;
+        for(int index = i; index < Math.min(i+k, arr.length); index++)
+        {
+            len++;
+            maxi = Math.max(maxi, arr[index]);
+            int curr = (len*maxi)+dp[index+1];
+            result = Math.max(result, curr);
+        }
+        dp[i] = result;
+    }
+    return dp[0];
+}

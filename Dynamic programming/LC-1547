@@ -1,0 +1,74 @@
+// Question - Minimum cost to cut a stick
+// Level - Hard
+// Prerequsites - Should be familiar with solving Partition DP problems.
+
+
+//Memoization
+int helper(int i, int j, int[] cuts, int dp[][])
+{
+    if(i > j)
+    {
+        return 0;
+    }
+    if(dp[i][j] != -1)
+    {
+        return dp[i][j];
+    }
+    int minCost = Integer.MAX_VALUE;
+    for(int k = i; k <= j; k++)
+    {
+        int cost = cuts[j+1]-cuts[i-1]+helper(i,k-1,cuts, dp)+helper(k+1,j,cuts, dp);
+        minCost = Math.min(minCost, cost);
+    }
+    dp[i][j] = minCost;
+    return dp[i][j];
+}
+public int minCost(int n, int[] cuts) {
+    int finalCuts[] = new int[cuts.length+2];
+    int dp[][] = new int[cuts.length+1][cuts.length+1];
+    for(int i = 0; i <= cuts.length; i++)
+    {
+        for(int j = 0; j <= cuts.length; j++)
+        {
+            dp[i][j] = -1;
+        }
+    }
+    finalCuts[0] = 0;
+    finalCuts[finalCuts.length-1] = n;
+    Arrays.sort(cuts);
+    for(int i = 1; i < finalCuts.length-1; i++)
+    {
+        finalCuts[i] = cuts[i-1];
+    }
+    System.out.println(Arrays.toString(finalCuts));
+    return helper(1,cuts.length,finalCuts, dp);
+}
+
+//Tabulation
+
+public int minCost(int n, int[] cuts) {
+int finalCuts[] = new int[cuts.length+2];
+int dp[][] = new int[cuts.length+2][cuts.length+2];
+finalCuts[0] = 0;
+finalCuts[finalCuts.length-1] = n;
+Arrays.sort(cuts);
+for(int i = 1; i < finalCuts.length-1; i++)
+{
+    finalCuts[i] = cuts[i-1];
+}
+for(int i = cuts.length; i >= 1; i--)
+{
+    for(int j = i; j <= cuts.length; j++)
+    {
+        int minCost = Integer.MAX_VALUE;
+        for(int k = i; k <= j; k++)
+        {
+            int cost = finalCuts[j+1]-finalCuts[i-1]+dp[i][k-1]+dp[k+1][j];
+            minCost = Math.min(minCost, cost);
+        }
+        dp[i][j] = minCost;
+    }
+}
+
+return dp[1][cuts.length];
+}
