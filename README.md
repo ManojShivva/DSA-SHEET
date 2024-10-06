@@ -3,7 +3,7 @@ This is my DSA sheet. In this repository, I will upload the solutions to the que
 
 I solved all the questions in this repository in JAVA programming language. I am comfortable to solve the problems in Python as well.. But for me, (JAVA > Python) :)
 
-For every question, I will the upload funtion which has the logic to solve the problem.
+For every question, I will upload the funtion which has the logic to solve the problem.
  
 Currently, I finished DP questions from A2Z sheet [Striver].
 
