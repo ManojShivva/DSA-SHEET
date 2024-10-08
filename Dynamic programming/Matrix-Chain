@@ -1,0 +1,74 @@
+// Question - Matrix Chain Multiplication
+// Level - Hard
+// Prerequsites - Should be familiar with solving Partition DP problems
+// Platform - GeeksForGeeks
+
+//Memoization TC - O(N*N) * O(N) [inner loop], SC - O(N*N) + O(N)[Stack calls]
+
+class Solution{
+    static int helper(int start, int end, int N, int arr[], int[][] dp)
+    {
+        if(start == end)
+        {
+            return 0;
+        }
+        if(dp[start][end] != -1)
+        {
+            return dp[start][end];
+        }
+        int result = 1000000007;
+        for(int i = start; i < end; i++)
+        {
+            int steps = (arr[start-1]*arr[i]*arr[end])+helper(start, i, N, arr, dp)+helper(i+1,end, N, arr, dp);
+            if(result > steps)
+            {
+                result = steps;
+            }
+        }
+        dp[start][end] = result;
+        return dp[start][end];
+    }
+    
+    static int matrixMultiplication(int N, int arr[])
+    {
+        // code here
+        int dp[][] = new int[N][N];
+        for(int i = 0; i < N; i++)
+        {
+            for(int j = 0; j < N; j++)
+            {
+                dp[i][j] = -1;
+            }
+        }
+        return helper(1, N-1, N, arr, dp);
+    }
+}
+
+
+//Tabulation TC - O(N*N) * O(N) [inner loop], SC - O(N*N)
+
+class Solution{
+    static int matrixMultiplication(int N, int arr[])
+    {
+        int dp[][] = new int[N][N];
+        for(int i = N-1; i >= 1; i--)
+        {
+            for(int j = i+1; j < N; j++)
+            {
+                int result = 1000000007;
+                for(int k = i; k < j; k++)
+                {
+                    int steps = (arr[i-1]*arr[k]*arr[j])+dp[i][k]+dp[k+1][j];
+                    if(result > steps)
+                    {
+                        result = steps;
+                    }
+                }
+                dp[i][j] = result;
+            }
+        }
+        
+        return dp[1][N-1];
+        
+    }
+}

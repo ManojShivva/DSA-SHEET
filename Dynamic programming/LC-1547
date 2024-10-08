@@ -3,7 +3,7 @@
 // Prerequsites - Should be familiar with solving Partition DP problems.
 
 
-//Memoization
+//Memoization TC - O(N*N) * O(N) [inner loop], SC - O(N*N) + O(N)[Stack calls]
 int helper(int i, int j, int[] cuts, int dp[][])
 {
     if(i > j)
@@ -44,7 +44,7 @@ public int minCost(int n, int[] cuts) {
     return helper(1,cuts.length,finalCuts, dp);
 }
 
-//Tabulation
+//Tabulation TC - O(N*N) * O(N) [inner loop], SC - O(N*N)
 
 public int minCost(int n, int[] cuts) {
 int finalCuts[] = new int[cuts.length+2];
